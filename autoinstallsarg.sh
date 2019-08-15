@@ -99,15 +99,9 @@ sleep 1
 
 ## EDITANDO O ARQUIVO .CONF DO SARG ##
 
-if [ ! -f "$sgconf" ]
-	then
-		echo "ARQUIVO DE CONFIGURACAO INEXISTENTE! GERANDO NOVO AQUIVO."
-		> "$sgconf"
-fi
 if [ -f "$sgconf" ]
 	then
 		cp $sgconf $sgconf_bkp
-		#cat <<EOF | tee $sgconf > /dev/null 2>&1
 		cat <<EOF >$sgconf
 access_log /var/log/squid/access.log
 output_dir /var/www/html/squid-report
