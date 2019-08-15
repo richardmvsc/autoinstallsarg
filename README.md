@@ -1,0 +1,2 @@
+# autoinstallsarg
+auto install sarg
