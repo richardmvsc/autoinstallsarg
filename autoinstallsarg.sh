@@ -37,8 +37,8 @@ sleep 1
 
 if [ -f "$httpdconf" ]
 	then
-		cp -f $httpdconf $httpdconf_bkp
-		sed -i "s/^#ServerName.*/$IP_Global/" $httpdconf
+	    cp -f $httpdconf $httpdconf_bkp
+	    sed -i "s/^#ServerName.*/$IP_Global/" $httpdconf
 fi
 
 echo -ne '#########                            (42%)\r'
@@ -47,9 +47,9 @@ sleep 1
 ## REINICIAR APACHE ##
 if [ "$osversion" -lt "7" ]
 	then
-		/etc/init.d/httpd restart > /dev/null 2>&1
+	    /etc/init.d/httpd restart > /dev/null 2>&1
 	else
-		systemctl restart httpd > /dev/null 2>&1
+	    systemctl restart httpd > /dev/null 2>&1
 fi
 
 echo -ne '############                         (55%)\r'
@@ -101,8 +101,8 @@ sleep 1
 
 if [ -f "$sgconf" ]
 	then
-		cp $sgconf $sgconf_bkp
-		cat <<EOF >$sgconf
+	    cp $sgconf $sgconf_bkp
+	    cat <<EOF >$sgconf
 access_log /var/log/squid/access.log
 output_dir /var/www/html/squid-report
 date_format e
