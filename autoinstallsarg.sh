@@ -2,7 +2,7 @@
 
 ## SETANDO VARIAVEIS ##
 
-osversion=$(awk '{print $3}' /etc/centos-release | cut -d. -f 1)
+osversion=$(awk '{if ($3 ~ /[0-9]/) print $3} ; {if ($4 ~ /[0-9]/) print $4}' /etc/centos-release | cut -d. -f 1)
 sgconf="/usr/local/etc/sarg.conf"
 sgconf_bkp="/usr/local/etc/sarg.conf.bkp"
 httpdconf="/etc/httpd/conf/httpd.conf"
@@ -26,9 +26,9 @@ sleep 1
 
 if [ "$osversion" -lt "7" ]
         then
-                /etc/init.d/httpd start > /dev/null 2>&1
+            /etc/init.d/httpd start > /dev/null 2>&1
         else
-                systemctl start httpd > /dev/null 2>&1
+            systemctl start httpd > /dev/null 2>&1
 fi
 echo -ne '######                               (33%)\r'
 sleep 1
