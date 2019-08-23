@@ -1,12 +1,11 @@
 #!/bin/bash
 
 ## SETANDO VARIAVEIS ##
-
+depend=("epel-release wget tar ndash gcc gd gd-devel make perl-GD httpd")
+urlsarg=("https://iweb.dl.sourceforge.net/project/sarg/sarg/sarg-2.3.11/sarg-2.3.11.tar.gz")
 osversion=$(awk '{if ($3 ~ /[0-9]/) print $3} ; {if ($4 ~ /[0-9]/) print $4}' /etc/centos-release | cut -d. -f 1)
 sgconf="/usr/local/etc/sarg.conf"
-sgconf_bkp="/usr/local/etc/sarg.conf.bkp"
 httpdconf="/etc/httpd/conf/httpd.conf"
-httpdconf_bkp="/etc/httpd/conf/httpd.conf.bkp"
 IP_1="ServerName"
 IP_2=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
 IP_Global="$IP_1 $IP_2:80"
@@ -18,7 +17,7 @@ read -p "Endereco IP: " -e -i $IP_2 IP
 
 ## INSTALANDO  DEPENDENCIAS ##
 
-yum install wget tar ndash y gcc gd gd-devel make perl-GD httpd -y > /dev/null 2>&1
+yum install "$depend" -y > /dev/null 2>&1
 echo -ne '###                                  (10%)\r'
 sleep 1
 
@@ -37,8 +36,8 @@ sleep 1
 
 if [ -f "$httpdconf" ]
 	then
-	    cp -f $httpdconf $httpdconf_bkp
-	    sed -i "s/^#ServerName.*/$IP_Global/" $httpdconf
+		cp -f "$httpdconf" "$httpdconf.bkp"
+		sed -i "s/^#ServerName.*/$IP_Global/" "$httpdconf"
 fi
 
 echo -ne '#########                            (42%)\r'
@@ -47,9 +46,9 @@ sleep 1
 ## REINICIAR APACHE ##
 if [ "$osversion" -lt "7" ]
 	then
-	    /etc/init.d/httpd restart > /dev/null 2>&1
+		/etc/init.d/httpd restart > /dev/null 2>&1
 	else
-	    systemctl restart httpd > /dev/null 2>&1
+		systemctl restart httpd > /dev/null 2>&1
 fi
 
 echo -ne '############                         (55%)\r'
@@ -65,7 +64,7 @@ sleep 1
 
 ## DOWNLOAD SARG ##
 
-wget https://iweb.dl.sourceforge.net/project/sarg/sarg/sarg-2.3.11/sarg-2.3.11.tar.gz > /dev/null 2>&1
+wget "$urlsarg" > /dev/null 2>&1
 
 echo -ne '##################                   (77%)\r'
 sleep 1
@@ -101,8 +100,8 @@ sleep 1
 
 if [ -f "$sgconf" ]
 	then
-	    cp $sgconf $sgconf_bkp
-	    cat <<EOF >$sgconf
+		cp "$sgconf" "$sgconf.bkp"
+		cat <<EOF >"$sgconf"
 access_log /var/log/squid/access.log
 output_dir /var/www/html/squid-report
 date_format e
